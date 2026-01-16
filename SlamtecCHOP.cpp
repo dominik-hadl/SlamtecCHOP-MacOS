@@ -197,10 +197,14 @@ SlamtecCHOP::execute(CHOP_Output* output,
 			std::string com_port = inputs->getParString(PortName);
 			const int baudrate = inputs->getParInt(BaudrateName);
 			
+#ifdef __APPLE__
 			// Prepend /dev/ if not present (macOS serial port path fix)
+			// On macOS, serial ports are at /dev/tty.xxx
 			if (!com_port.empty() && com_port[0] != '/') {
 				com_port = "/dev/" + com_port;
 			}
+#endif
+			// On Windows, COM ports are used directly (e.g., "COM3")
 
 			lidar->setLidar(true, com_port.c_str(), baudrate, precision_, is_quality_, is_standart_, false);
 			lidar->on_connect();
