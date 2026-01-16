@@ -31,7 +31,7 @@ jobs:
     - name: Configure CMake (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+        cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
     
     - name: Configure CMake (macOS)
       if: matrix.os == 'macos-latest'
@@ -41,7 +41,7 @@ jobs:
     - name: Build (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        cmake --build build --config Release
+        cmake --build build --config Release --verbose
     
     - name: Build (macOS)
       if: matrix.os == 'macos-latest'
@@ -52,14 +52,26 @@ jobs:
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
-        if exist "build\Release\SlamtecCHOP.dll" (
-          mkdir dist
-          copy "build\Release\SlamtecCHOP.dll" dist\
-        ) else if exist "plugin\SlamtecCHOP.dll" (
+        echo Searching for DLL...
+        dir /s /b SlamtecCHOP.dll 2>nul
+        if exist "plugin\SlamtecCHOP.dll" (
+          echo Found in plugin directory
           mkdir dist
           copy "plugin\SlamtecCHOP.dll" dist\
+        ) else if exist "build\Release\SlamtecCHOP.dll" (
+          echo Found in build\Release
+          mkdir dist
+          copy "build\Release\SlamtecCHOP.dll" dist\
+        ) else if exist "build\plugin\SlamtecCHOP.dll" (
+          echo Found in build\plugin
+          mkdir dist
+          copy "build\plugin\SlamtecCHOP.dll" dist\
         ) else (
-          echo "Error: DLL not found" && exit 1
+          echo Error: DLL not found. Listing directories...
+          dir plugin 2>nul
+          dir build 2>nul
+          dir build\Release 2>nul
+          exit 1
         )
     
     - name: Collect macOS artifacts

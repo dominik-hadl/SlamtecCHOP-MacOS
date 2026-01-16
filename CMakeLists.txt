@@ -92,7 +92,7 @@ if (WIN32)
 	target_compile_definitions(sl_lidar_sdk PRIVATE _WIN32)
 	# Windows system libraries will be linked at plugin level
 elseif(APPLE)
-	target_compile_definitions(sl_lidar_sdk PRIVATE __APPLE__)
+	target_compile_definitions(sl_lidar_sdk PRIVATE __APPLE__ _MACOS)
 endif()
 
 # ============================================================================
@@ -120,6 +120,13 @@ if (WIN32)
 	set_target_properties(${PLUGIN_NAME} PROPERTIES PREFIX "")
 	set_target_properties(${PLUGIN_NAME} PROPERTIES SUFFIX ".dll")
 	
+	# Set output directory for Windows (MODULE targets use RUNTIME_OUTPUT_DIRECTORY)
+	set_target_properties(${PLUGIN_NAME} PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}
+		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DIRECTORY}
+		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_DIRECTORY}
+	)
+	
 	# Windows system libraries
 	target_link_libraries(${PLUGIN_NAME} PRIVATE 
 		setupapi
@@ -140,10 +147,13 @@ elseif(APPLE)
 	set_target_properties(${PLUGIN_NAME} PROPERTIES BUNDLE_EXTENSION "plugin")
 	
 	# Set bundle output location
-	set_target_properties(${PLUGIN_NAME} PROPERTIES
-		MACOSX_BUNDLE TRUE
-		MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/plugin/Slamtec.plugin/Contents/Info.plist
-	)
+	set_target_properties(${PLUGIN_NAME} PROPERTIES MACOSX_BUNDLE TRUE)
+	
+	# Set Info.plist if it exists, otherwise CMake will generate a default one
+	set(INFO_PLIST_PATH ${CMAKE_CURRENT_SOURCE_DIR}/plugin/Slamtec.plugin/Contents/Info.plist)
+	if(EXISTS ${INFO_PLIST_PATH})
+		set_target_properties(${PLUGIN_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${INFO_PLIST_PATH})
+	endif()
 endif()
 
 # Link SDK to plugin
