@@ -121,10 +121,15 @@ if (WIN32)
 	set_target_properties(${PLUGIN_NAME} PROPERTIES SUFFIX ".dll")
 	
 	# Set output directory for Windows (MODULE targets use RUNTIME_OUTPUT_DIRECTORY)
+	# Visual Studio generator creates config subdirectories, so we need to set both
 	set_target_properties(${PLUGIN_NAME} PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}
 		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DIRECTORY}
 		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_DIRECTORY}
+		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${OUTPUT_DIRECTORY}
+		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${OUTPUT_DIRECTORY}
+		# Prevent Visual Studio from creating config subdirectories
+		VS_DEBUGGER_WORKING_DIRECTORY ${OUTPUT_DIRECTORY}
 	)
 	
 	# Windows system libraries

@@ -31,7 +31,7 @@ jobs:
     - name: Configure CMake (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
+        cmake -B build -S . -G "Visual Studio 17 2022" -A x64
     
     - name: Configure CMake (macOS)
       if: matrix.os == 'macos-latest'
@@ -52,24 +52,26 @@ jobs:
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
-        echo Searching for DLL...
-        dir /s /b SlamtecCHOP.dll 2>nul
-        if exist "plugin\SlamtecCHOP.dll" (
-          echo Found in plugin directory
+        echo Searching for DLL (plugin name is Slamtec, so DLL is Slamtec.dll)...
+        dir /s /b Slamtec.dll 2>nul
+        echo.
+        echo Checking specific locations (Visual Studio creates Release subdirectory)...
+        if exist "plugin\Release\Slamtec.dll" (
+          echo Found: plugin\Release\Slamtec.dll
           mkdir dist
-          copy "plugin\SlamtecCHOP.dll" dist\
-        ) else if exist "build\Release\SlamtecCHOP.dll" (
-          echo Found in build\Release
+          copy "plugin\Release\Slamtec.dll" dist\SlamtecCHOP.dll
+        ) else if exist "plugin\Slamtec.dll" (
+          echo Found: plugin\Slamtec.dll
           mkdir dist
-          copy "build\Release\SlamtecCHOP.dll" dist\
-        ) else if exist "build\plugin\SlamtecCHOP.dll" (
-          echo Found in build\plugin
+          copy "plugin\Slamtec.dll" dist\SlamtecCHOP.dll
+        ) else if exist "build\Release\Slamtec.dll" (
+          echo Found: build\Release\Slamtec.dll
           mkdir dist
-          copy "build\plugin\SlamtecCHOP.dll" dist\
+          copy "build\Release\Slamtec.dll" dist\SlamtecCHOP.dll
         ) else (
           echo Error: DLL not found. Listing directories...
           dir plugin 2>nul
-          dir build 2>nul
+          dir plugin\Release 2>nul
           dir build\Release 2>nul
           exit 1
         )
