@@ -1,0 +1,93 @@
+name: Build Plugin
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup CMake
+      uses: jwlawson/actions-setup-cmake@v1.14
+      with:
+        cmake-version: '3.27'
+    
+    - name: Configure CMake (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+    
+    - name: Configure CMake (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+    
+    - name: Build (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cmake --build build --config Release
+    
+    - name: Build (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        cmake --build build --config Release
+    
+    - name: Collect Windows artifacts
+      if: matrix.os == 'windows-latest'
+      shell: cmd
+      run: |
+        if exist "build\Release\SlamtecCHOP.dll" (
+          mkdir dist
+          copy "build\Release\SlamtecCHOP.dll" dist\
+        ) else if exist "plugin\SlamtecCHOP.dll" (
+          mkdir dist
+          copy "plugin\SlamtecCHOP.dll" dist\
+        ) else (
+          echo "Error: DLL not found" && exit 1
+        )
+    
+    - name: Collect macOS artifacts
+      if: matrix.os == 'macos-latest'
+      run: |
+        mkdir -p dist
+        if [ -d "plugin/Slamtec.plugin" ]; then
+          cp -R plugin/Slamtec.plugin dist/
+        elif [ -d "build/Slamtec.plugin" ]; then
+          cp -R build/Slamtec.plugin dist/
+        else
+          echo "Error: Plugin bundle not found" && exit 1
+        fi
+    
+    - name: Upload Windows artifacts
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: SlamtecCHOP-windows
+        path: dist/*.dll
+        if-no-files-found: error
+        retention-days: 30
+    
+    - name: Upload macOS artifacts
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: SlamtecCHOP-macos
+        path: dist/Slamtec.plugin
+        if-no-files-found: error
+        retention-days: 30

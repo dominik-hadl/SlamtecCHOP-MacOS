@@ -194,8 +194,13 @@ SlamtecCHOP::execute(CHOP_Output* output,
 			lidar->on_connect();
 		}else
 		{
-			const std::string com_port = inputs->getParString(PortName);
+			std::string com_port = inputs->getParString(PortName);
 			const int baudrate = inputs->getParInt(BaudrateName);
+			
+			// Prepend /dev/ if not present (macOS serial port path fix)
+			if (!com_port.empty() && com_port[0] != '/') {
+				com_port = "/dev/" + com_port;
+			}
 
 			lidar->setLidar(true, com_port.c_str(), baudrate, precision_, is_quality_, is_standart_, false);
 			lidar->on_connect();

@@ -107,7 +107,11 @@ Parameters::setup(OP_ParameterManager* manager)
 		cp.name = PortName;
 		cp.label = PortLabel;
 		cp.page = PageConnectionsName;
+#ifdef __APPLE__
+		cp.defaultValue = "/dev/tty.usbserial-0001";
+#else
 		cp.defaultValue = "COM3";
+#endif
 
 		OP_ParAppendResult res = manager->appendString(cp);
 

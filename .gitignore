@@ -1,2 +1,138 @@
-﻿/Release/
+﻿# Build directories
+build/
+Build/
+Debug/
+Release/
+x64/
+Win32/
+obj/
+bin/
+out/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+.cmake/
+
+# Compiled binaries and libraries
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.pdb
+*.idb
+*.exp
+*.ilk
+*.obj
+*.o
+*.lo
+*.slo
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# IDE files
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.vcxproj.user
+*.sln.DotSettings.user
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+*.vcxproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.opensdf
+*.sdf
+*.db
+*.opendb
+
+# Xcode
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+*.xcuserdata/
+DerivedData/
+
+# Log files
+*.log
+*.log.*
+logs/
+*.tlog
+
+# OS-specific
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+*.orig
+
+# Plugin output (keep structure, ignore binaries)
+plugin/*
+
+# SDK build outputs (if building SDK separately)
+rplidar_sdk/output/
+rplidar_sdk/obj/
+
+# Test files
+*.toe
+!*.toe.example
+
+# Coverage reports
+*.gcov
+*.gcda
+*.gcno
+coverage/
+
+# Package files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Debug logs
+*.debug.log
+debug.log
+.cursor/debug.log

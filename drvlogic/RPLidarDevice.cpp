@@ -4,6 +4,7 @@
 static const int baudRateLists[] = {
     115200,
     256000,
+    460800,
     1000000
 };
 
